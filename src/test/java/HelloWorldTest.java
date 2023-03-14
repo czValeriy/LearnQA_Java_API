@@ -1,6 +1,5 @@
 import io.restassured.RestAssured;
-import io.restassured.http.Headers;
-import io.restassured.response.Response;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -10,21 +9,18 @@ import java.util.Map;
 public class HelloWorldTest {
     @Test
     public void testRestAssured(){
-        Map<String, String> headers = new HashMap<>();
-        headers.put("MyHeader1", "MyHeader1");
-        headers.put("MyHeader2", "MyHeader2");
+        Map<String, String> params = new HashMap<>();
+        params.put("message", "And this is a second message");
+        params.put ("timestamp", "2021-06-04 16:41:51");
 
-        Response response = RestAssured
+        JsonPath response = RestAssured
                 .given()
-                .redirects()
-                .follow(true)
-                .when()
-                .get("https://playground.learnqa.ru/api/long_redirect")
-                .andReturn();
+                .queryParams(params)
+                .get("https://playground.learnqa.ru/api/get_json_homework")
+                .jsonPath();
 
-        response.prettyPrint();
+        String messages = response.get("message");
+        System.out.println(messages);
 
-        int statusCode = response.getStatusCode();
-        System.out.println(statusCode);
     }
 }
